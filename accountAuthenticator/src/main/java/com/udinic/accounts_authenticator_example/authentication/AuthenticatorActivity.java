@@ -144,14 +144,16 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
             // Creating the account on the device and setting the auth token we got
             // (Not setting the auth token will cause another call to the server to authenticate the user)
+            //注册成功之后保存用户信息(用户名、密码等)
             mAccountManager.addAccountExplicitly(account, accountPassword, null);
             mAccountManager.setAuthToken(account, authtokenType, authtoken);
         } else {
             Log.d("udinic", TAG + "> finishLogin > setPassword");
             mAccountManager.setPassword(account, accountPassword);
+            //登录成功之后，仅仅更新密码？不需要更新authtoken？？？？
         }
 
-        setAccountAuthenticatorResult(intent.getExtras());
+        setAccountAuthenticatorResult(intent.getExtras());//设置最后的结果？？？？？？
         setResult(RESULT_OK, intent);
         finish();
     }
