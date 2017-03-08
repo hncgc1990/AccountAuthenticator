@@ -22,6 +22,7 @@ import static com.udinic.accounts_authenticator_example.authentication.Authentic
  * and it return the result back to the Authenticator
  *
  * User: udinic
+ *注册界面,将对应的结果返回到登录界面
  */
 public class SignUpActivity extends Activity {
 
@@ -75,6 +76,9 @@ public class SignUpActivity extends Activity {
                     data.putString(AccountManager.KEY_ACCOUNT_TYPE, mAccountType);
                     data.putString(AccountManager.KEY_AUTHTOKEN, authtoken);
                     data.putString(PARAM_USER_PASS, accountPassword);
+
+
+
                 } catch (Exception e) {
                     data.putString(KEY_ERROR_MESSAGE, e.getMessage());
                 }

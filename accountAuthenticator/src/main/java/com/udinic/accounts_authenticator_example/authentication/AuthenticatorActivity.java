@@ -20,6 +20,7 @@ import static com.udinic.accounts_authenticator_example.authentication.AccountGe
  * Called by the Authenticator and in charge of identifing the user.
  *
  * It sends back to the Authenticator the result.
+ * 登录界面
  */
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
@@ -102,7 +103,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                 String authtoken = null;
                 Bundle data = new Bundle();
                 try {
-                    authtoken = sServerAuthenticate.userSignIn(userName, userPass, mAuthTokenType);
+                    authtoken = sServerAuthenticate.userSignIn(userName, userPass, mAuthTokenType);//进行登录
 
                     data.putString(AccountManager.KEY_ACCOUNT_NAME, userName);
                     data.putString(AccountManager.KEY_ACCOUNT_TYPE, accountType);
