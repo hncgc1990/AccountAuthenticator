@@ -65,6 +65,7 @@ public class UdinicAuthenticator extends AbstractAccountAuthenticator {
         Log.d("udinic", TAG + "> peekAuthToken returned - " + authToken);
 
         // Lets give another try to authenticate the user
+//        如果当前的authToken为空,就重新尝试登录一下
         if (TextUtils.isEmpty(authToken)) {
             final String password = am.getPassword(account);
             if (password != null) {
@@ -78,6 +79,7 @@ public class UdinicAuthenticator extends AbstractAccountAuthenticator {
         }
 
         // If we get an authToken - we return it
+//        通过尝试登录获取到authToken,直接返回数据
         if (!TextUtils.isEmpty(authToken)) {
             final Bundle result = new Bundle();
             result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
@@ -89,6 +91,7 @@ public class UdinicAuthenticator extends AbstractAccountAuthenticator {
         // If we get here, then we couldn't access the user's password - so we
         // need to re-prompt them for their credentials. We do that by creating
         // an intent to display our AuthenticatorActivity.
+        //尝试登录失败,直接让用户进行登录
         final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(AuthenticatorActivity.ARG_ACCOUNT_TYPE, account.type);

@@ -1,6 +1,5 @@
 package com.udinic.accounts_example;
 
-import static com.udinic.accounts_authenticator_example.authentication.AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
@@ -16,6 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.udinic.accounts_authenticator_example.authentication.AccountGeneral;
+
+import static com.udinic.accounts_authenticator_example.authentication.AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,13 +44,23 @@ public class Main1 extends Activity {
         findViewById(R.id.btnAddAccount).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                //当前没有用户,需要新增用户才能进行登录
+
                 addNewAccount(AccountGeneral.ACCOUNT_TYPE, AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS);
+
+
+
+
+
             }
         });
 
         findViewById(R.id.btnGetAuthToken).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //获取当前用户类型的所有已授权用户
                 showAccountPicker(AUTHTOKEN_TYPE_FULL_ACCESS, false);
             }
         });
@@ -66,6 +77,21 @@ public class Main1 extends Activity {
                 showAccountPicker(AUTHTOKEN_TYPE_FULL_ACCESS, true);
             }
         });
+
+        findViewById(R.id.clearPassword).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Account[] accounts = mAccountManager.getAccounts();
+                for (int i=0;i<accounts.length;i++){
+                    Log.d("chen",accounts[i].toString());
+                    mAccountManager.clearPassword(accounts[i]);
+                }
+
+            }
+        });
+
+
         
         if (savedInstanceState != null) {
         	boolean showDialog = savedInstanceState.getBoolean(STATE_DIALOG);
@@ -74,6 +100,27 @@ public class Main1 extends Activity {
         		showAccountPicker(AUTHTOKEN_TYPE_FULL_ACCESS, invalidate);
         	}
         }
+
+
+//        mAccountManager.addOnAccountsUpdatedListener(new OnAccountsUpdateListener() {
+//            @Override
+//            public void onAccountsUpdated(Account[] accounts) {
+//
+//                    for (int i=0;i<accounts.length;i++){
+//                        Log.d("chen",accounts[i].toString());
+//                    }
+//                Log.d("chen","OnAccountsUpdateListener的线程"+Thread.currentThread().getName());
+//
+//            }
+//        },new Handler(){
+//            @Override
+//            public void handleMessage(Message msg) {
+////                super.handleMessage(msg);
+//
+//                Log.d("chen","当前的handler的线程"+Thread.currentThread().getName());
+//
+//            }
+//        },true);
 
     }
     
@@ -95,11 +142,12 @@ public class Main1 extends Activity {
         final AccountManagerFuture<Bundle> future = mAccountManager.addAccount(accountType, authTokenType, null, null, this, new AccountManagerCallback<Bundle>() {
             @Override
             public void run(AccountManagerFuture<Bundle> future) {
+                //新增用户之后的后续操作
                 try {
                     Bundle bnd = future.getResult();
                     showMessage("Account was created");
                     Log.d("udinic", "AddNewAccount Bundle is " + bnd);
-
+                    Log.d("udinic", "当前线程是 " + Thread.currentThread().getName());//此处是主线程
                 } catch (Exception e) {
                     e.printStackTrace();
                     showMessage(e.getMessage());
@@ -114,7 +162,7 @@ public class Main1 extends Activity {
      */
     private void showAccountPicker(final String authTokenType, final boolean invalidate) {
     	mInvalidate = invalidate;
-        final Account availableAccounts[] = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+        final Account availableAccounts[] = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);//获取指定类型的所有用户
 
         if (availableAccounts.length == 0) {
             Toast.makeText(this, "No accounts", Toast.LENGTH_SHORT).show();
@@ -150,7 +198,7 @@ public class Main1 extends Activity {
             @Override
             public void run() {
                 try {
-                    Bundle bnd = future.getResult();
+                    Bundle bnd = future.getResult();//会阻塞线程
 
                     final String authtoken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
                     showMessage((authtoken != null) ? "SUCCESS!\ntoken: " + authtoken : "FAIL");
@@ -178,7 +226,7 @@ public class Main1 extends Activity {
                     Bundle bnd = future.getResult();
 
                     final String authtoken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
-                    mAccountManager.invalidateAuthToken(account.type, authtoken);
+                    mAccountManager.invalidateAuthToken(account.type, authtoken);//清空AccountManager中指定的authtoken缓存
                     showMessage(account.name + " invalidated");
                 } catch (Exception e) {
                     e.printStackTrace();

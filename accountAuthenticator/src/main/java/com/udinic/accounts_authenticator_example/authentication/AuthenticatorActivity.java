@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.udinic.accounts_authenticator_example.R;
 
 import static com.udinic.accounts_authenticator_example.authentication.AccountGeneral.sServerAuthenticate;
@@ -74,6 +75,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                 startActivityForResult(signup, REQ_SIGNUP);
             }
         });
+
+
+
     }
 
     @Override
@@ -144,13 +148,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
             // Creating the account on the device and setting the auth token we got
             // (Not setting the auth token will cause another call to the server to authenticate the user)
-            //注册成功之后保存用户信息(用户名、密码等)
+            //注册和登录成功之后保存用户信息(用户名、密码等)
             mAccountManager.addAccountExplicitly(account, accountPassword, null);
             mAccountManager.setAuthToken(account, authtokenType, authtoken);
         } else {
             Log.d("udinic", TAG + "> finishLogin > setPassword");
             mAccountManager.setPassword(account, accountPassword);
-            //登录成功之后，仅仅更新密码？不需要更新authtoken？？？？
+            //这里是登录过只有用户名,密码被删除了
         }
 
         setAccountAuthenticatorResult(intent.getExtras());//设置最后的结果？？？？？？
